@@ -523,7 +523,6 @@ public class Solution implements Cloneable{
         for (int i = 0; i < instanceTimes.length; i++) {
             if (yArray[i] != -1){
                 double theHour = instanceTimes[i]/3600D;
-                theHour = Math.ceil(theHour);
                 totalCost += theHour * instanceInfo[this.yArray[i]].spotPrice;
             }
         }
@@ -843,7 +842,6 @@ public class Solution implements Cloneable{
 //       Now we have exe time for each instance
         for (int i = 0; i < instanceTimes.length; i++) {
             double theHour = instanceTimes[i]/3600D;
-            theHour = Math.ceil(theHour);
             totalCost += theHour * instanceInfo[this.yArray[i]].spotPrice;
         }
 

@@ -777,13 +777,11 @@ public class HEFTAlgorithm implements OptimizationAlgorithm {
 
     double computeCostPerHour(double time, int typeId){
         double theHour = time/3600D;
-        theHour = Math.ceil(theHour);
         return theHour * instanceInfo[typeId].getSpotPrice();
     }
 
     double computeHourFromSec(double time){
         double theHour = time/3600D;
-        theHour = Math.ceil(theHour);
         return theHour;
     }
 
