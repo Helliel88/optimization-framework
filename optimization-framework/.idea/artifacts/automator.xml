@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="grp-automator">
-    <output-path>$PROJECT_DIR$/out/artifacts/grp_automator</output-path>
+  <artifact type="jar" build-on-make="true" name="automator">
+    <output-path>$PROJECT_DIR$/out/artifacts/automator</output-path>
     <root id="archive" name="optframework.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/../../tempinf/META-INF/MANIFEST.MF" />
