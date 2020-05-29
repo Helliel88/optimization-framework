@@ -35,7 +35,7 @@ public class RunGRPHEFTAlgorithm {
         InstanceInfo tempInstanceInfo[] = instanceInfo;
         RunGRPHEFTAlgorithm.thisTypeIsUsedAsMaxEfficient = new boolean[instanceInfo.length];
 
-        GRPHEFTAlgorithm grpheftAlgorithm = new GRPHEFTAlgorithm(tempInstanceInfo);
+        GRPHEFTAlgorithm grpheftAlgorithm = new GRPHEFTAlgorithm(tempInstanceInfo, GlobalAccess.igrpToggle);
         Solution finalSolution = grpheftAlgorithm.runAlgorithm();
 
         finalSolution.origin = "non-iterative-grp-heft";

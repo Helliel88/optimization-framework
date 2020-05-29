@@ -26,6 +26,7 @@ public class RunGRPPACSAAlgorithm {
 
     public static void runGRPPACSA(){
         {
+            GlobalAccess.igrpToggle = 0;
             if (Config.pacsa_algorithm.use_igrp_initial_solution){
                 RunIterativeGRPHEFTAlgorithm.runGRPHEFT();
             }else {
@@ -61,6 +62,28 @@ public class RunGRPPACSAAlgorithm {
 
             grpHEFTSolution.fitness();
 
+            workflow = PreProcessor.doPreProcessing(PopulateWorkflow.populateWorkflowWithId(Config.global.budget, 0, Config.global.workflow_id));
+
+            GlobalAccess.igrpToggle = 1;
+            RunGRPHEFTAlgorithm.runGRPHEFT();
+
+            pureSolution = GlobalAccess.latestSolution;
+
+            Config.global.m_number = pureSolution.numberOfUsedInstances;
+            workflow.setBeta(Beta.computeBetaValue(workflow, instanceInfo, Config.global.m_number));
+
+            Config.global.m_number = pureSolution.numberOfUsedInstances;
+
+//preparing GRP-HEFT Solution
+            Solution grpHEFTSolutionPlus = new Solution(workflow, instanceInfo, pureSolution.numberOfUsedInstances);
+            grpHEFTSolutionPlus.xArray = pureSolution.xArray;
+            grpHEFTSolutionPlus.yArray = pureSolution.yArray;
+            grpHEFTSolutionPlus.zArray = pureSolution.zArray;
+            grpHEFTSolutionPlus.numberOfUsedInstances = pureSolution.numberOfUsedInstances;
+            grpHEFTSolutionPlus.origin = pureSolution.origin;
+
+            grpHEFTSolutionPlus.fitness();
+
             Cloner cloner = new Cloner();
             GlobalAccess.orderedJobList = cloner.deepClone(workflow.getJobList());
             Collections.sort(GlobalAccess.orderedJobList, Job.rankComparator);
@@ -75,6 +98,7 @@ public class RunGRPPACSAAlgorithm {
             //insets an initial solution from GRP-HEFT algorithm
             if (Config.pacsa_algorithm.insert_heft_initial_solution){
                 initialSolutionList.add(grpHEFTSolution);
+                initialSolutionList.add(grpHEFTSolutionPlus);
             }
 
             for (int i = 0; i < Config.pacsa_algorithm.getNumber_of_runs(); i++) {

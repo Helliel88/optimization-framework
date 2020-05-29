@@ -42,4 +42,6 @@ public class GlobalAccess {
     public static ArrayList<Long> timeInMilliSecArrayList;
 
     public static String workflowName;
+    
+    public static int igrpToggle;
 }

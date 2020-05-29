@@ -42,7 +42,7 @@ public class RunIterativeGRPHEFTAlgorithm {
 
         for (int i = 0; i < InstanceType.values().length; i++) {
             Log.logger.info("Run " + i);
-            GRPHEFTAlgorithm grpheftAlgorithm = new GRPHEFTAlgorithm(tempInstanceInfo);
+            GRPHEFTAlgorithm grpheftAlgorithm = new GRPHEFTAlgorithm(tempInstanceInfo, GlobalAccess.igrpToggle);
             Solution solution = grpheftAlgorithm.runAlgorithm();
             solutionArrayList.add(solution);
 

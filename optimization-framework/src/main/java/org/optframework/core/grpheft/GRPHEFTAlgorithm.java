@@ -23,9 +23,14 @@ public class GRPHEFTAlgorithm implements OptimizationAlgorithm{
 
     private static int originalMNumber;
     private InstanceInfo instanceInfo[];
+    //toggle is used for algorithm type
+    // 0 => normal IGRP
+    // 1 => IGRP Plus (selects instances with probability)
+    private int toggle;
 
-    public GRPHEFTAlgorithm(InstanceInfo[] instanceInfo) {
+    public GRPHEFTAlgorithm(InstanceInfo[] instanceInfo, int toggle) {
         this.instanceInfo = instanceInfo;
+        this.toggle = toggle;
     }
 
     @Override
@@ -97,8 +102,12 @@ public class GRPHEFTAlgorithm implements OptimizationAlgorithm{
         int number_of_affordable_fastest_instance = (int)((Config.global.budget)/cost_fastest_instance);
 
         Log.logger.info("Number of affordable fastest instances is:"+number_of_affordable_fastest_instance);
-
-        int totalInstancesForModifiedHEFT[] = greedyResourceProvisioning(instanceInfo, number_of_affordable_fastest_instance, minPrice, cost_fastest_instance);
+        int totalInstancesForModifiedHEFT[] = null;
+        if (toggle == 0){
+            totalInstancesForModifiedHEFT = greedyResourceProvisioning(instanceInfo, number_of_affordable_fastest_instance, minPrice, cost_fastest_instance);
+        }else if (toggle == 1){
+            totalInstancesForModifiedHEFT = greedyResourceProvisioningPlus(instanceInfo, number_of_affordable_fastest_instance, minPrice, cost_fastest_instance);
+        }
         int totalInstancesForGRPHEFT[] = new int[totalInstancesForModifiedHEFT.length];
 
         System.arraycopy(
@@ -179,6 +188,45 @@ public class GRPHEFTAlgorithm implements OptimizationAlgorithm{
             totalInstances = newTotalInstance;
 
             remainingBudget -= maxValidCost;
+        }
+
+        return totalInstances;
+    }
+
+    /**
+     * Greedy Resource Provisioning Algorithm (GRP)
+     * */
+    static int[] greedyResourceProvisioningPlus(InstanceInfo instanceInfo[], int number_of_affordable_fastest_instance, double minPrice, double cost_fastest_instance){
+        int totalInstances[] = new int[0];
+        double remainingBudget = Config.global.budget;
+
+        double totalWeight = 0.0;
+        for (InstanceInfo info: instanceInfo){
+            totalWeight += info.getType().getEcu();
+        }
+
+        while (minPrice <= remainingBudget && totalInstances.length < Config.global.m_number) {
+            //do random operation
+            int randomIndex = -1;
+            double random = Math.random() * totalWeight;
+            for (int i = 0; i < instanceInfo.length; ++i)
+            {
+                random -= instanceInfo[i].getType().getEcu();
+                if (random <= 0.0d)
+                {
+                    randomIndex = i;
+                    break;
+                }
+            }
+            double t = remainingBudget;
+            t -= instanceInfo[randomIndex].getSpotPrice();
+            if (t >= 0){
+                int newTotalInstance[] = new int[totalInstances.length + 1];
+                System.arraycopy(totalInstances, 0, newTotalInstance, 0,totalInstances.length);
+                newTotalInstance[totalInstances.length] = randomIndex;
+                totalInstances = newTotalInstance;
+                remainingBudget = t;
+            }
         }
 
         return totalInstances;
