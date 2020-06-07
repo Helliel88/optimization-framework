@@ -100,3 +100,4 @@ pso_algorithm:
 automator:
   type: "single-automator"
   number_of_runs: 3
+  number_of_initial_solutions: 4

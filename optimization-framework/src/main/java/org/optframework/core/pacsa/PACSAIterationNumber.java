@@ -28,6 +28,7 @@ public class PACSAIterationNumber extends PACSAOptimization{
 
     @Override
     public Solution runAlgorithm() {
+        try {
         Printer.printSAInfo();
         int iteration_counter = 0;
 
@@ -231,5 +232,8 @@ public class PACSAIterationNumber extends PACSAOptimization{
 
         Log.logger.info("The best solution in PACSA founded in iteration:"+RunPACSAAlgorithm.Best_Iteration+"\n");
         return globalBestSolution;
+        }catch (Exception e){
+            return  globalBestSolution;
+        }
     }
 }

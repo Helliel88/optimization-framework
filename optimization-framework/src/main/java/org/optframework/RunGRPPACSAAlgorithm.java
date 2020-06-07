@@ -64,25 +64,29 @@ public class RunGRPPACSAAlgorithm {
 
             workflow = PreProcessor.doPreProcessing(PopulateWorkflow.populateWorkflowWithId(Config.global.budget, 0, Config.global.workflow_id));
 
-            GlobalAccess.igrpToggle = 1;
-            RunGRPHEFTAlgorithm.runGRPHEFT();
+            OptimizationAlgorithm optimizationAlgorithm;
+            List<Solution> solutionList = new ArrayList<>();
+            List<Solution> initialSolutionList = new ArrayList<>();
 
-            pureSolution = GlobalAccess.latestSolution;
+            for (int i = 0; i < Config.automator.number_of_initial_solutions; i++) {
+                GlobalAccess.igrpToggle = 1;
+                RunGRPHEFTAlgorithm.runGRPHEFT();
 
-            Config.global.m_number = pureSolution.numberOfUsedInstances;
-            workflow.setBeta(Beta.computeBetaValue(workflow, instanceInfo, Config.global.m_number));
-
-            Config.global.m_number = pureSolution.numberOfUsedInstances;
+                pureSolution = GlobalAccess.latestSolution;
+                workflow.setBeta(Beta.computeBetaValue(workflow, instanceInfo, Config.global.m_number));
 
 //preparing GRP-HEFT Solution
-            Solution grpHEFTSolutionPlus = new Solution(workflow, instanceInfo, pureSolution.numberOfUsedInstances);
-            grpHEFTSolutionPlus.xArray = pureSolution.xArray;
-            grpHEFTSolutionPlus.yArray = pureSolution.yArray;
-            grpHEFTSolutionPlus.zArray = pureSolution.zArray;
-            grpHEFTSolutionPlus.numberOfUsedInstances = pureSolution.numberOfUsedInstances;
-            grpHEFTSolutionPlus.origin = pureSolution.origin;
+                Solution grpHEFTSolutionPlus = new Solution(workflow, instanceInfo, pureSolution.numberOfUsedInstances);
+                grpHEFTSolutionPlus.xArray = pureSolution.xArray;
+                grpHEFTSolutionPlus.yArray = pureSolution.yArray;
+                grpHEFTSolutionPlus.zArray = pureSolution.zArray;
+                grpHEFTSolutionPlus.numberOfUsedInstances = pureSolution.numberOfUsedInstances;
+                grpHEFTSolutionPlus.origin = pureSolution.origin;
 
-            grpHEFTSolutionPlus.fitness();
+                grpHEFTSolutionPlus.fitness();
+
+                initialSolutionList.add(grpHEFTSolutionPlus);
+            }
 
             Cloner cloner = new Cloner();
             GlobalAccess.orderedJobList = cloner.deepClone(workflow.getJobList());
@@ -90,16 +94,18 @@ public class RunGRPPACSAAlgorithm {
 
             computeCoolingFactorForSA(workflow.getJobList().size());
 
-            OptimizationAlgorithm optimizationAlgorithm;
-            List<Solution> solutionList = new ArrayList<>();
-            List<Solution> initialSolutionList = new ArrayList<>();
-
             long runTimeSum = 0;
             //insets an initial solution from GRP-HEFT algorithm
             if (Config.pacsa_algorithm.insert_heft_initial_solution){
                 initialSolutionList.add(grpHEFTSolution);
-                initialSolutionList.add(grpHEFTSolutionPlus);
             }
+
+            int tmp = -1;
+            for (Solution solution : initialSolutionList){
+                if (solution.numberOfUsedInstances > tmp)
+                    tmp = solution.numberOfUsedInstances;
+            }
+            Config.global.m_number = tmp;
 
             for (int i = 0; i < Config.pacsa_algorithm.getNumber_of_runs(); i++) {
                 Printer.printSplitter();
