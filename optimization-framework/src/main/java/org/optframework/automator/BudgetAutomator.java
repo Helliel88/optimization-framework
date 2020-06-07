@@ -26,10 +26,10 @@ public class BudgetAutomator implements GenericAutomator{
         GlobalAccess.solutionRepository = new ArrayList<>();
 
         switch (Config.global.workflow_id){
-//            case 1: budgetList = inspiral1000; break;
-//            case 2: budgetList = inspiral100; break;
+            case 1: budgetList = inspiral1000; break;
+            case 2: budgetList = inspiral100; break;
             case 3: budgetList = inspiral50; break;
-//            case 4: budgetList = inspiral30; break;
+            case 4: budgetList = inspiral30; break;
             //
             case 10: budgetList = montage1000; break;
             case 11: budgetList = montage100; break;
