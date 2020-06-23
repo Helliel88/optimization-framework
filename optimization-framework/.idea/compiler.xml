@@ -11,7 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="OptimizationFramework" target="8" />
+      <module name="OptimizationFramework" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
