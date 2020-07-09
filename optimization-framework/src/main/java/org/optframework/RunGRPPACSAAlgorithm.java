@@ -100,12 +100,17 @@ public class RunGRPPACSAAlgorithm {
                 initialSolutionList.add(grpHEFTSolution);
             }
 
-            int tmp = -1;
+            int tmp = 99999999;
             for (Solution solution : initialSolutionList){
-                if (solution.numberOfUsedInstances > tmp)
+                if (solution.numberOfUsedInstances < tmp)
                     tmp = solution.numberOfUsedInstances;
             }
             Config.global.m_number = tmp;
+
+            for (int i = 0; i < initialSolutionList.size(); i++) {
+                if (initialSolutionList.get(i).numberOfUsedInstances != Config.global.m_number)
+                    initialSolutionList.remove(i);
+            }
 
             for (int i = 0; i < Config.pacsa_algorithm.getNumber_of_runs(); i++) {
                 Printer.printSplitter();
